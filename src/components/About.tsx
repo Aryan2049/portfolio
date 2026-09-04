@@ -83,7 +83,7 @@ function WallTorch({ side }: { side: "left" | "right" }) {
 
 const SOCIAL_LINKS = [
   { label: "LinkedIn", href: profile.socials.linkedin, Icon: LinkedinIcon },
-  { label: "Email", href: `mailto:${profile.email}`, Icon: Mail },
+  { label: "Email", href: `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(profile.email)}`, Icon: Mail },
   { label: "GitHub", href: profile.socials.github, Icon: GithubIcon },
   { label: "YouTube", href: profile.socials.youtube, Icon: YoutubeIcon },
   { label: "X", href: profile.socials.x, Icon: XIcon },
@@ -151,7 +151,7 @@ function PortraitCard() {
     <div className="relative aspect-[4/5] overflow-hidden rounded-2xl border-2 border-ember/25 shadow-[0_20px_60px_rgba(0,0,0,0.5)]">
       {/* photo (when public/me.jpg exists) — warmed to match the cave */}
       <img
-        src="/me.jpg"
+        src="/me.webp"
         alt={`${profile.name} — portrait`}
         onLoad={() => setPhotoState("ok")}
         onError={() => setPhotoState("missing")}
