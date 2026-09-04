@@ -1,0 +1,391 @@
+@import "tailwindcss";
+
+@theme {
+  /* ── Quest palette ─────────────────────────────────────────────
+     Dark-night blues/greens for sky & forest, warm parchment for
+     maps, ember-orange + gold for the treasure glow. */
+  --color-void: #080e1c;
+  --color-night: #0d1b0a;
+  --color-canopy: #0e1a16;
+  --color-moss: #15221a;
+
+  --color-cave: #2a2218;
+  --color-mortar: #1e1c1a;
+  --color-soot: #141110;
+
+  --color-parch: #f4e3c3;
+  --color-cream: #fff8f0;
+  --color-tan: #d4b896;
+  --color-earth: #8b6f47;
+  --color-sepia: #5c4a3a;
+  --color-cocoa: #3a2a1a;
+
+  --color-ember: #ff8236;
+  --color-flame: #ff6b18;
+  --color-gold: #ffb800;
+  --color-honey: #ffd236;
+  --color-ash: #ffe9c9;
+
+  --color-clearing: #f0f7e4;
+  --color-forest: #2d5016;
+  --color-forest-deep: #1a3a0a;
+
+  --color-trail: #1a7a6d; /* the "you are here" teal */
+
+  --font-heading: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    /* room for the floating pill nav when jumping to a section */
+    scroll-padding-top: 5.5rem;
+  }
+
+  body {
+    background-color: var(--color-void);
+    color: var(--color-ash);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  ::selection {
+    background-color: color-mix(in srgb, var(--color-gold) 30%, transparent);
+    color: #fff8e6;
+  }
+
+  /* Slim scrollbar that suits the dark nights */
+  ::-webkit-scrollbar {
+    width: 9px;
+    height: 9px;
+  }
+  ::-webkit-scrollbar-track {
+    background: var(--color-void);
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #26331f;
+    border-radius: 999px;
+    border: 2px solid var(--color-void);
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a4a2e;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+}
+
+@layer components {
+  /* Aged parchment "treasure map" surface */
+  .map-surface {
+    background: linear-gradient(145deg, #d4b896, #c4a77d 30%, #d4b896 50%, #bfa06e 75%, #d4b896);
+  }
+
+  /* Soft inner shadow that makes a surface feel like worn paper/leather */
+  .aged {
+    box-shadow:
+      inset 0 0 130px 24px rgba(70, 48, 22, 0.42),
+      inset 0 0 60px 12px rgba(40, 26, 12, 0.28);
+  }
+
+  /* Subtle fractal-noise grain for dark sections */
+  .grain {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='256' height='256' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-size: 128px 128px;
+  }
+
+  /* Vignette used to fade cave edges into darkness */
+  .vignette {
+    background: radial-gradient(ellipse at 50% 45%, transparent 32%, rgba(0, 0, 0, 0.55) 100%);
+  }
+}
+
+/* ── Ambient animation helpers ──────────────────────────────── */
+
+.firefly {
+  animation: firefly 4s ease-in-out infinite;
+}
+.firefly-d0 { animation-delay: 0s; }
+.firefly-d1 { animation-delay: 0.8s; }
+.firefly-d2 { animation-delay: 1.2s; }
+.firefly-d3 { animation-delay: 1.8s; }
+.firefly-d4 { animation-delay: 2.4s; }
+.firefly-d5 { animation-delay: 3s; }
+.firefly-d6 { animation-delay: 3.5s; }
+
+.ember {
+  animation: ember-rise 5s ease-out infinite;
+}
+.ember-fall {
+  animation: ember-fall 6s ease-in infinite;
+}
+.ember-d0 { animation-delay: 0s; }
+.ember-d1 { animation-delay: 0.6s; }
+.ember-d2 { animation-delay: 1.2s; }
+.ember-d3 { animation-delay: 1.8s; }
+.ember-d4 { animation-delay: 2.5s; }
+.ember-d5 { animation-delay: 3.2s; }
+.ember-d6 { animation-delay: 3.8s; }
+.ember-d7 { animation-delay: 4.4s; }
+
+.torch-flame-1 { animation: torch-flicker 2s ease-in-out infinite; }
+.torch-flame-2 { animation: torch-flicker 1.8s ease-in-out 0.2s infinite; }
+.torch-flame-3 { animation: torch-flicker 1.5s ease-in-out 0.4s infinite; }
+.torch-flame-4 { animation: torch-flicker 2.1s ease-in-out 0.3s infinite; }
+.torch-flame-5 { animation: torch-flicker 1.9s ease-in-out 0.5s infinite; }
+.torch-flame-6 { animation: torch-flicker 1.6s ease-in-out 0.7s infinite; }
+
+.sway {
+  transform-origin: bottom center;
+  animation: sway 5s ease-in-out infinite;
+}
+
+.treasure-glow {
+  animation: treasure-pulse 2s ease-in-out infinite;
+}
+
+@keyframes firefly {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  20% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+    transform: translateY(-15px);
+  }
+  80% {
+    opacity: 0.8;
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes ember-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  10% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.6;
+    transform: translateY(-40vh) translateX(15px) scale(0.8);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-90vh) translateX(-10px) scale(0.3);
+  }
+}
+
+@keyframes ember-fall {
+  0% {
+    opacity: 0;
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  10% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.4;
+    transform: translateY(40vh) translateX(-12px) scale(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(85vh) translateX(8px) scale(0.2);
+  }
+}
+
+@keyframes torch-flicker {
+  0%,
+  100% {
+    opacity: 0.9;
+    transform: scaleY(1) scaleX(1);
+  }
+  25% {
+    opacity: 1;
+    transform: scaleY(1.06) scaleX(0.96);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scaleY(0.94) scaleX(1.04);
+  }
+  75% {
+    opacity: 0.95;
+    transform: scaleY(1.03) scaleX(0.98);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.25;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Slow creature blink for the eyes hiding in the undergrowth */
+.eye-blink {
+  animation: eye-blink 4.2s ease-in-out infinite;
+}
+
+@keyframes eye-blink {
+  0%,
+  90%,
+  100% {
+    transform: scaleY(1);
+  }
+  94%,
+  97% {
+    transform: scaleY(0.08);
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes treasure-pulse {
+  0%,
+  100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.1;
+    transform: scale(1.3);
+  }
+}
+
+@keyframes slow-pan {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes chat-glow {
+  0%,
+  100% {
+    opacity: 0.9;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+.chat-pulse {
+  animation: chat-glow 3s ease-in-out infinite;
+}
+
+/* ── Campfire (hero) ─────────────────────────────────────────── */
+
+/* Flame layers + ground glow. transform-box:fill-box keeps the
+   flicker anchored to each shape's own bottom/center. */
+.campfire-flame {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: campfire-flicker 1.2s ease-in-out infinite;
+}
+
+.campfire-glow {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: campfire-glow-pulse 2.2s ease-in-out infinite;
+}
+
+@keyframes campfire-flicker {
+  0%,
+  100% {
+    opacity: 0.92;
+    transform: scaleY(1) scaleX(1) skewX(0deg);
+  }
+  25% {
+    opacity: 1;
+    transform: scaleY(1.09) scaleX(0.93) skewX(2deg);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scaleY(0.92) scaleX(1.06) skewX(-1.5deg);
+  }
+  75% {
+    opacity: 0.97;
+    transform: scaleY(1.05) scaleX(0.96) skewX(1deg);
+  }
+}
+
+@keyframes campfire-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scaleX(1) scaleY(1);
+  }
+  50% {
+    opacity: 0.72;
+    transform: scaleX(1.22) scaleY(1.4);
+  }
+}
+
+/* ── Cave vines (about) — slow ambient sway ──────────────────── */
+
+.vine-sway {
+  transform-origin: top center;
+  animation: vine-sway 8s ease-in-out infinite alternate;
+}
+
+@keyframes vine-sway {
+  from {
+    transform: rotate(-1.4deg);
+  }
+  to {
+    transform: rotate(1.4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .firefly,
+  .ember,
+  .ember-fall,
+  .torch-flame-1,
+  .torch-flame-2,
+  .torch-flame-3,
+  .torch-flame-4,
+  .torch-flame-5,
+  .torch-flame-6,
+  .sway,
+  .treasure-glow,
+  .eye-blink,
+  .campfire-flame,
+  .campfire-glow,
+  .vine-sway {
+    animation: none !important;
+  }
+}
